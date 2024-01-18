@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import { unstable_noStore as noStore } from 'next/cache';
 
 import {
@@ -10,9 +9,7 @@ import {
   User,
   Revenue,
 } from './definitions';
-import { formatCurrency } from './utils';
-
-const client = new PrismaClient();
+import { client, formatCurrency } from './utils';
 
 export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
@@ -226,10 +223,11 @@ export async function fetchFilteredCustomers(query: string) {
 		ORDER BY customers.name ASC
 	  `;
 
-    const customers = data.rows.map((customer) => ({
+    const customers = data.map((customer) => ({
       ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
+      total_invoices: Number(customer.total_invoices),
+      total_pending: formatCurrency(Number(customer.total_pending)),
+      total_paid: formatCurrency(Number(customer.total_paid)),
     }));
 
     return customers;
