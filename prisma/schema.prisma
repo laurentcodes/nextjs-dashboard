@@ -10,28 +10,28 @@ datasource db {
 }
 
 model customers {
-  id        String @id @unique
-  name      String
-  email     String
-  image_url String
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name      String @db.VarChar(255)
+  email     String @db.VarChar(255)
+  image_url String @db.VarChar(255)
 }
 
 model invoices {
-  id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  customer_id String
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  customer_id String   @db.Uuid
   amount      Int
-  status      String
-  date        String
+  status      String   @db.VarChar(255)
+  date        DateTime @db.Date
 }
 
 model revenue {
-  month   String @unique
+  month   String @unique @db.VarChar(4)
   revenue Int
 }
 
 model users {
-  id       String @id @unique
-  name     String
-  email    String
+  id       String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name     String @db.VarChar(255)
+  email    String @unique
   password String
 }
