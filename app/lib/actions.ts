@@ -78,7 +78,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   try {
     await client.$queryRaw`
       INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+      VALUES (${customerId}::uuid, ${amountInCents}, ${status}, ${date}::date)
     `;
   } catch (error) {
     return {
@@ -117,7 +117,7 @@ export async function updateInvoice(
   try {
     await client.$queryRaw`
       UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      SET customer_id = ${customerId}::uuid, amount = ${amountInCents}, status = ${status}
       WHERE id::text = ${id}
     `;
   } catch (error) {
