@@ -105,7 +105,7 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await client.$queryRaw<InvoicesTable>`
+    const invoices = await client.$queryRaw<InvoicesTable[]>`
       SELECT
         invoices.id,
         invoices.amount,
