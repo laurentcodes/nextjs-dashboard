@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 
-import { client } from './utils.ts';
+import { client } from './utils';
 
 const FormSchema = z.object({
   id: z.string(),

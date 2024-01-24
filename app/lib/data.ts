@@ -38,7 +38,7 @@ export async function fetchLatestInvoices() {
   noStore();
 
   try {
-    const data = await client.$queryRaw<LatestInvoiceRaw>`
+    const data = await client.$queryRaw<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
@@ -70,7 +70,7 @@ export async function fetchCardData() {
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM invoices`;
 
-    const data = await Promise.all([
+    const data: Array<any> = await Promise.all([
       invoiceCountPromise,
       customerCountPromise,
       invoiceStatusPromise,
@@ -79,7 +79,9 @@ export async function fetchCardData() {
     const numberOfInvoices = Number(data[0][0].count ?? '0');
     const numberOfCustomers = Number(data[1][0].count ?? '0');
     const totalPaidInvoices = formatCurrency(Number(data[2][0].paid) ?? '0');
-    const totalPendingInvoices = formatCurrency(Number(data[2][0].pending) ?? '0');
+    const totalPendingInvoices = formatCurrency(
+      Number(data[2][0].pending) ?? '0',
+    );
 
     return {
       numberOfCustomers,
@@ -99,7 +101,7 @@ export async function fetchFilteredInvoices(
   currentPage: number,
 ) {
   noStore();
-  
+
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
@@ -132,10 +134,10 @@ export async function fetchFilteredInvoices(
 }
 
 export async function fetchInvoicesPages(query: string) {
-  noStore(); 
+  noStore();
 
   try {
-    const count = await client.$queryRaw`SELECT COUNT(*)
+    const count: Array<any> = await client.$queryRaw`SELECT COUNT(*)
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
@@ -158,7 +160,7 @@ export async function fetchInvoiceById(id: string) {
   noStore();
 
   try {
-    const data = await client.$queryRaw<InvoiceForm>`
+    const data = await client.$queryRaw<InvoiceForm[]>`
       SELECT
         invoices.id,
         invoices.customer_id,
@@ -205,7 +207,7 @@ export async function fetchFilteredCustomers(query: string) {
   noStore();
 
   try {
-    const data = await client.$queryRaw<CustomersTableType>`
+    const data = await client.$queryRaw<CustomersTableType[]>`
 		SELECT
 		  customers.id,
 		  customers.name,
@@ -241,7 +243,9 @@ export async function getUser(email: string) {
   noStore();
 
   try {
-    const user = await client.$queryRaw`SELECT * FROM users WHERE email=${email}`;
+    const user: { [key: string]: any } =
+      await client.$queryRaw`SELECT * FROM users WHERE email=${email}`;
+
     return user.rows[0] as User;
   } catch (error) {
     console.error('Failed to fetch user:', error);
