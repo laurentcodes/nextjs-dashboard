@@ -187,7 +187,7 @@ export async function fetchCustomers() {
   noStore();
 
   try {
-    const data = await client.$queryRaw<CustomerField>`
+    const data = await client.$queryRaw<CustomerField[]>`
       SELECT
         id,
         name
